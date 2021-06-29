@@ -96,7 +96,7 @@ const Logger = (function() {
     }
   };
 
-  setLogLevel(DEBUG); // Default level is debug.
+  setLogLevel(ERROR); // Default level.
 
   that.setLogLevel = setLogLevel;
 
