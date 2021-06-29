@@ -129,23 +129,28 @@ export function convertToSubscriptionCapabilities(mediaInfo) {
         }
       }
       videoCodecs.sort();
-      const resolutions = Array.from(
-          track.optional.parameters.resolution,
-          (r) => new MediaFormatModule.Resolution(r.width, r.height));
-      resolutions.sort(sortResolutions);
-      const bitrates = Array.from(
-          track.optional.parameters.bitrate,
-          (bitrate) => extractBitrateMultiplier(bitrate));
-      bitrates.push(1.0);
-      bitrates.sort(sortNumbers);
-      const frameRates = JSON.parse(
-          JSON.stringify(track.optional.parameters.framerate));
-      frameRates.sort(sortNumbers);
-      const keyFrameIntervals = JSON.parse(
-          JSON.stringify(track.optional.parameters.keyFrameInterval));
-      keyFrameIntervals.sort(sortNumbers);
-      video = new SubscriptionModule.VideoSubscriptionCapabilities(
-          videoCodecs, resolutions, frameRates, bitrates, keyFrameIntervals);
+      if (!track.optional?.parameters) {
+        video = new SubscriptionModule.VideoSubscriptionCapabilities(
+            videoCodecs, [], [], [], []);
+      } else {
+        const resolutions = Array.from(
+            track.optional.parameters.resolution,
+            (r) => new MediaFormatModule.Resolution(r.width, r.height));
+        resolutions.sort(sortResolutions);
+        const bitrates = Array.from(
+            track.optional.parameters.bitrate,
+            (bitrate) => extractBitrateMultiplier(bitrate));
+        bitrates.push(1.0);
+        bitrates.sort(sortNumbers);
+        const frameRates =
+            JSON.parse(JSON.stringify(track.optional.parameters.framerate));
+        frameRates.sort(sortNumbers);
+        const keyFrameIntervals = JSON.parse(
+            JSON.stringify(track.optional.parameters.keyFrameInterval));
+        keyFrameIntervals.sort(sortNumbers);
+        video = new SubscriptionModule.VideoSubscriptionCapabilities(
+            videoCodecs, resolutions, frameRates, bitrates, keyFrameIntervals);
+      }
     }
   }
   return new SubscriptionModule.SubscriptionCapabilities(audio, video);
